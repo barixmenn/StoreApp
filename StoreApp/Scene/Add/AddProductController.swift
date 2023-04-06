@@ -11,6 +11,10 @@ import SwiftUI
 
 class AddProductController: UIViewController {
     
+    //MARK: - Properties
+    private var selectedCategory: Category?
+
+    //MARK: - UI Elements
     lazy var titleTextField: UITextField = {
         let textfield = UITextField()
         textfield.placeholder = "Enter title"
@@ -46,12 +50,25 @@ class AddProductController: UIViewController {
         return textView
     }()
     
+    lazy var categoryPickerView: CategoryPickerView = {
+        let pickerView = CategoryPickerView { [weak self ] category in
+            print(category)
+            self?.selectedCategory = category
+        }
+        return pickerView
+    }()
+    
+    
+    
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         setupUI()
     }
     
+    
+    //MARK: - Functions
     private func setupUI() {
         
         let stackView = UIStackView()
@@ -66,6 +83,16 @@ class AddProductController: UIViewController {
         stackView.addArrangedSubview(descriptionTextView)
         stackView.addArrangedSubview(imageURLTextField)
         
+        // category picker view
+        let hostingController = UIHostingController(rootView: categoryPickerView)
+        stackView.addArrangedSubview(hostingController.view)
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        
+        
+        stackView.addArrangedSubview(imageURLTextField)
+        
+        
         view.addSubview(stackView)
         
         
@@ -75,6 +102,8 @@ class AddProductController: UIViewController {
         descriptionTextView.heightAnchor.constraint(equalToConstant: 200).isActive = true
     }
 }
+
+
 
 struct AddProductViewControllerRepresentable: UIViewControllerRepresentable {
     
