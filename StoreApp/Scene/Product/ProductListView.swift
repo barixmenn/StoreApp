@@ -11,6 +11,13 @@ import SwiftUI
 
 class ProductListView: UITableViewController {
     
+    //MARK: - UI Elements
+    lazy var addProductBarItemButton: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addProductButtonPressed))
+        return barButtonItem
+    }()
+    //MARK: - Properties
+    
     private var category: Category
     private var client = NetworkManager()
     private var products: [Product] = []
@@ -20,6 +27,11 @@ class ProductListView: UITableViewController {
         super.init(nibName: nil, bundle: nil)
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         title = category.name
@@ -30,6 +42,7 @@ class ProductListView: UITableViewController {
         }
     }
     
+    //MARK: - Functions
     private func populateProducts() async {
         do {
             products = try await client.getProductsByCategory(categoryId: category.id)
@@ -39,9 +52,21 @@ class ProductListView: UITableViewController {
         }
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+}
+
+//MARK: - Selector
+extension ProductListView {
+    @objc private func addProductButtonPressed(_ sender: UIBarButtonItem) {
+        let addProductVC = AddProductController()
+        let navigationController = UINavigationController(rootViewController: addProductVC)
+        present(navigationController, animated: true)
     }
+    
+}
+
+
+//MARK: - TableView Delagates
+extension ProductListView {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         products.count
@@ -61,4 +86,3 @@ class ProductListView: UITableViewController {
     }
     
 }
-
