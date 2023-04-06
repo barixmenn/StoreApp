@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class ProductListView: UITableViewController {
     
@@ -52,10 +53,9 @@ class ProductListView: UITableViewController {
         
         let product = products[indexPath.row]
         
-        var configuration = cell.defaultContentConfiguration()
-        configuration.text = product.title
-        configuration.secondaryText = product.description
-        cell.contentConfiguration = configuration
+        cell.contentConfiguration = UIHostingConfiguration(content: {
+            ProductListCell(product: product)
+        })
         
         return cell
     }
