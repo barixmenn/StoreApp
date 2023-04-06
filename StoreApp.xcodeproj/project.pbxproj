@@ -20,6 +20,7 @@
 		60B8C9DA29DF03CD0073679D /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60B8C9D929DF03CD0073679D /* ProductListView.swift */; };
 		60C03DB129DF776600A70BBC /* ProductListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C03DB029DF776600A70BBC /* ProductListCell.swift */; };
 		60C03DB729DF7C4C00A70BBC /* AddProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C03DB629DF7C4C00A70BBC /* AddProductController.swift */; };
+		60C03DBA29DF8C4100A70BBC /* CategoryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C03DB929DF8C4100A70BBC /* CategoryPickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		60B8C9D929DF03CD0073679D /* ProductListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListView.swift; sourceTree = "<group>"; };
 		60C03DB029DF776600A70BBC /* ProductListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListCell.swift; sourceTree = "<group>"; };
 		60C03DB629DF7C4C00A70BBC /* AddProductController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductController.swift; sourceTree = "<group>"; };
+		60C03DB929DF8C4100A70BBC /* CategoryPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryPickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 		60B8C9D829DF03B40073679D /* Product */ = {
 			isa = PBXGroup;
 			children = (
+				60C03DB829DF8C3300A70BBC /* Helper */,
 				60C03DAF29DF775600A70BBC /* Cell */,
 				60B8C9D929DF03CD0073679D /* ProductListView.swift */,
 			);
@@ -166,6 +169,14 @@
 				60C03DB629DF7C4C00A70BBC /* AddProductController.swift */,
 			);
 			path = Add;
+			sourceTree = "<group>";
+		};
+		60C03DB829DF8C3300A70BBC /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				60C03DB929DF8C4100A70BBC /* CategoryPickerView.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +264,7 @@
 				60C03DB729DF7C4C00A70BBC /* AddProductController.swift in Sources */,
 				60B6837B29DE550000928887 /* Constant.swift in Sources */,
 				60B6838129DE55C000928887 /* Category.swift in Sources */,
+				60C03DBA29DF8C4100A70BBC /* CategoryPickerView.swift in Sources */,
 				60C03DB129DF776600A70BBC /* ProductListCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
