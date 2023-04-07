@@ -57,6 +57,16 @@ class AddProductController: UIViewController {
         }
         return pickerView
     }()
+    lazy var cancelBarButtonItem: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonPressed))
+        return barButtonItem
+    }()
+    
+    lazy var saveBarButtonItem: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveButtonPressed))
+        barButtonItem.isEnabled = false
+        return barButtonItem
+    }()
     
     
     
@@ -70,6 +80,8 @@ class AddProductController: UIViewController {
     
     //MARK: - Functions
     private func setupUI() {
+        navigationItem.leftBarButtonItem = cancelBarButtonItem
+        navigationItem.rightBarButtonItem = saveBarButtonItem
         
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -103,12 +115,10 @@ class AddProductController: UIViewController {
     }
 }
 
-
-
 struct AddProductViewControllerRepresentable: UIViewControllerRepresentable {
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        AddProductController()
+        UINavigationController(rootViewController: AddProductController())
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
@@ -119,5 +129,17 @@ struct AddProductViewControllerRepresentable: UIViewControllerRepresentable {
 struct AddProductViewController_Previews: PreviewProvider {
     static var previews: some View {
         AddProductViewControllerRepresentable()
+    }
+}
+
+
+//MARK: - Selector
+extension AddProductController {
+    @objc func cancelButtonPressed(_ sender: UIBarButtonItem) {
+        
+    }
+    
+    @objc func saveButtonPressed(_ sender: UIBarButtonItem) {
+        
     }
 }
