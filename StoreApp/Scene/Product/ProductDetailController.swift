@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import SwiftUI
 
 class ProductDetailController: UIViewController {
     //MARK: - UI Elements
@@ -43,6 +44,12 @@ class ProductDetailController: UIViewController {
         button.setTitle("Delete", for: .normal)
         return button
     }()
+    
+    lazy var loadingIndicatorView: UIActivityIndicatorView = {
+        let activityIndicatorView = UIActivityIndicatorView()
+        activityIndicatorView.style = .large
+        return activityIndicatorView
+    }()
  
     
     
@@ -56,9 +63,6 @@ class ProductDetailController: UIViewController {
     //MARK: - Functions
     
     private func configure() {
-        view.backgroundColor = UIColor.white
-        title = product.title
-        
         let stackView = UIStackView()
         stackView.spacing = 10
         stackView.axis = .vertical
@@ -67,9 +71,30 @@ class ProductDetailController: UIViewController {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
+        view.backgroundColor = UIColor.white
+        title = product.title
+    
+        
         descriptionLabel.text = product.description
         priceLabel.text = product.price.formatAsCurrency()
         
+        Task {
+            loadingIndicatorView.startAnimating()
+            var images: [UIImage] = []
+            for imageURL in (product.images ?? []) {
+                guard let downloadedImage = await ImageLoader.load(url: imageURL) else { return }
+                images.append(downloadedImage)
+            }
+            
+            let productImageListVC = UIHostingController(rootView: ProductImageCell(images: images))
+            guard let productImageListView = productImageListVC.view else { return }
+            stackView.insertArrangedSubview(productImageListView, at: 0)
+            addChild(productImageListVC)
+            productImageListVC.didMove(toParent: self)
+            loadingIndicatorView.stopAnimating()
+        }
+        
+        stackView.addArrangedSubview(loadingIndicatorView)
         stackView.addArrangedSubview(descriptionLabel)
         stackView.addArrangedSubview(priceLabel)
         stackView.addArrangedSubview(deleteProductButton)
@@ -78,8 +103,10 @@ class ProductDetailController: UIViewController {
         
         // adding constraints
         stackView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        
+       
     }
-    
+
     //MARK: - Actions
 
 }
