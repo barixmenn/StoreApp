@@ -19,7 +19,7 @@ class ProductListView: UITableViewController {
     //MARK: - Properties
     
     private var category: Category
-    private var client = NetworkManager()
+    private var service = NetworkManager()
     private var products: [Product] = []
     
     init(category: Category) {
@@ -34,22 +34,29 @@ class ProductListView: UITableViewController {
     //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = category.name
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ProductTableViewCell")
+        configure()
         
         Task {
             await populateProducts()
+            
         }
     }
+    
     
     //MARK: - Functions
     private func populateProducts() async {
         do {
-            products = try await client.getProductsByCategory(categoryId: category.id)
+            products = try await service.getProductsByCategory(categoryId: category.id)
             tableView.reloadData()
         } catch {
             print(error)
         }
+    }
+    
+    private func configure(){
+        title = category.name
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ProductTableViewCell")
+        navigationItem.rightBarButtonItem = addProductBarItemButton
     }
     
 }
@@ -57,7 +64,7 @@ class ProductListView: UITableViewController {
 //MARK: - Selector
 extension ProductListView {
     @objc private func addProductButtonPressed(_ sender: UIBarButtonItem) {
-        let addProductVC = AddProductController()
+        let addProductVC = AddProductViewController()
         let navigationController = UINavigationController(rootViewController: addProductVC)
         present(navigationController, animated: true)
     }
@@ -75,6 +82,7 @@ extension ProductListView {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProductTableViewCell", for: indexPath)
+        cell.accessoryType = .disclosureIndicator
         
         let product = products[indexPath.row]
         
@@ -83,6 +91,38 @@ extension ProductListView {
         })
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let product = products[indexPath.row]
+        navigationController?.pushViewController(ProductDetailController(product: product), animated: true)
+    }
+    
+}
+
+
+
+extension ProductListView: AddProductViewControllerDelegate {
+    
+    func addProductViewControllerDidCancel(controller: AddProductViewController) {
+        controller.dismiss(animated: true)
+    }
+    
+    func addProductViewControllerDidSave(product: Product, controller: AddProductViewController) {
+        
+        let createProductRequest = CreateProduct(product: product)
+        
+        Task {
+            do {
+                let newProduct = try await service.createProduct(productRequest: createProductRequest)
+                products.insert(newProduct, at: 0)
+                tableView.reloadData()
+                controller.dismiss(animated: true)
+            } catch {
+                print(error)
+            }
+        }
+        
     }
     
 }
