@@ -26,11 +26,21 @@ struct AddProductFormState {
     }
 }
 
+
+protocol AddProductViewControllerDelegate {
+    func addProductViewControllerDidCancel(controller: AddProductViewController)
+    func addProductViewControllerDidSave(product: Product, controller: AddProductViewController)
+}
+
+    //MARK: - Controller
 class AddProductViewController: UIViewController {
     
+    //MARK: - Properties
+    var delegate: AddProductViewControllerDelegate?
     private var selectedCategory: Category?
     private var addProductFormState = AddProductFormState()
     
+    //MARK: - UI Elements
     lazy var titleTextField: UITextField = {
         let textfield = UITextField()
         textfield.placeholder = "Enter title"
@@ -95,44 +105,18 @@ class AddProductViewController: UIViewController {
         return barButtonItem
     }()
     
-    @objc func textFieldDidChange(_ sender: UITextField) {
-        
-        guard let text = sender.text else {
-            return
-        }
-        
-        switch sender.tag {
-            case AddProductTextFieldType.title.rawValue:
-                addProductFormState.title = !text.isEmpty
-            case AddProductTextFieldType.price.rawValue:
-                addProductFormState.price = !text.isEmpty && text.isNumeric
-            case AddProductTextFieldType.imageUrl.rawValue:
-                addProductFormState.imageUrl = !text.isEmpty
-            default:
-                break
-        }
-        
-        saveBarButtonItem.isEnabled = addProductFormState.isValid
-        
-    }
-    
-    @objc func cancelButtonPressed(_ sender: UIBarButtonItem) {
-        
-    }
-    
-    @objc func saveButtonPressed(_ sender: UIBarButtonItem) {
-        
-    }
-    
+ 
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.white
-        navigationItem.leftBarButtonItem = cancelBarButtonItem
-        navigationItem.rightBarButtonItem = saveBarButtonItem
         setupUI()
     }
     
+    //MARK: - Functions
     private func setupUI() {
+        view.backgroundColor = UIColor.white
+        navigationItem.leftBarButtonItem = cancelBarButtonItem
+        navigationItem.rightBarButtonItem = saveBarButtonItem
         
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -180,6 +164,50 @@ struct AddProductViewController_Previews: PreviewProvider {
     }
 }
 
+
+//MARK: - Validate
+extension AddProductViewController {
+    @objc func textFieldDidChange(_ sender: UITextField) {
+        
+        guard let text = sender.text else {
+            return
+        }
+        
+        switch sender.tag {
+            case AddProductTextFieldType.title.rawValue:
+                addProductFormState.title = !text.isEmpty
+            case AddProductTextFieldType.price.rawValue:
+                addProductFormState.price = !text.isEmpty && text.isNumeric
+            case AddProductTextFieldType.imageUrl.rawValue:
+                addProductFormState.imageUrl = !text.isEmpty
+            default:
+                break
+        }
+        
+        saveBarButtonItem.isEnabled = addProductFormState.isValid
+        
+    }
+    
+    @objc func cancelButtonPressed(_ sender: UIBarButtonItem) {
+        
+    }
+    
+    @objc func saveButtonPressed(_ sender: UIBarButtonItem) {
+        guard let title = titleTextField.text,
+              let price = Double(priceTextField.text ?? "0.00"),
+              let description = descriptionTextView.text,
+              let imageUrl = imageURLTextField.text,
+              let productImageUrl = URL(string: imageUrl),
+              let category = selectedCategory
+        else { return }
+        
+        let product = Product(title: title, price: price, description: description, images: [productImageUrl], category: category)
+        
+        delegate?.addProductViewControllerDidSave(product: product, controller: self)
+    }
+}
+
+//MARK: - TextField Delegate
 extension AddProductViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
