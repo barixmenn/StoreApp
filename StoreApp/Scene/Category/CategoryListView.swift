@@ -77,4 +77,9 @@ extension CategoryListView {
         cell.contentConfiguration = configure
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let category = categories[indexPath.row]
+        navigationController?.pushViewController(ProductListView(category: category), animated: true)
+    }
 }

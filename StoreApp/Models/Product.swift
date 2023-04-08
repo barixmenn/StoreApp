@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct Product : Codable {
-    let id: Int?
-    let title : String
-    let price : Double
+struct Product: Codable {
+    var id: Int?
+    let title: String
+    let price: Double
     let description: String
-    let images : [URL]?
-    let category : [Category]
+    let images: [URL]?
+    let category: Category
 }
